@@ -22,7 +22,6 @@
             height: 100vh; width: 100vw;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            word-break: keep-all;
         }
 
         /* --- BACKGROUND FLOATERS --- */
@@ -48,72 +47,77 @@
         }
         .active { display: flex; }
 
+        /* --- PAGE 1: ENVELOPE --- */
+        .chase-area { position: relative; width: 100%; height: 100%; }
+        .flying-envelope {
+            position: absolute; width: 140px; height: 90px;
+            cursor: pointer; z-index: 20; transition: transform 0.2s ease-out;
+        }
+        .env-body { position: relative; z-index: 2; font-size: 6rem; line-height: 1; text-align: center; }
+        .wing {
+            position: absolute; top: 30px; width: 70px; height: 40px;
+            background: rgba(255,255,255,0.9); border: 2px solid #eec; border-radius: 50%; z-index: 1;
+        }
+        .wing.left { left: -15px; transform-origin: right center; animation: flapL 0.2s infinite alternate; }
+        .wing.right { right: -15px; transform-origin: left center; animation: flapR 0.2s infinite alternate; }
+        @keyframes flapL { from { transform: rotate(-25deg); } to { transform: rotate(35deg); } }
+        @keyframes flapR { from { transform: rotate(25deg); } to { transform: rotate(-35deg); } }
+
         /* --- PAGE 2: TIMER --- */
-        .timer-group {
+        .timer-container {
             background: white; padding: 20px; border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px;
-            width: 90%; max-width: 350px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px; width: 85%;
         }
         .timer-label { font-size: 0.9rem; color: #888; margin-bottom: 5px; }
-        .timer-display {
-            font-size: 1rem; color: var(--primary); font-weight: 600;
-            margin-bottom: 15px; text-align: center;
-        }
+        .timer-display { font-size: 1rem; color: var(--primary); font-weight: 600; margin-bottom: 15px; }
 
-        /* --- SCRATCH --- */
+        /* --- PAGE 3: SCRATCH --- */
         .scratch-box {
-            position: relative; width: 280px; height: 280px;
+            position: relative; width: 300px; height: 300px;
             border: 8px solid white; border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15); overflow: hidden;
         }
 
-        /* --- GALLERY (11 ITEMS) --- */
-        .inventory {
-            position: absolute; top: 10px; left: 10px; right: 10px;
-            background: rgba(255,255,255,0.9); padding: 8px; border-radius: 15px;
-            display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 50;
-        }
-        .inv-slot {
-            aspect-ratio: 1/1; background: #eee; border-radius: 5px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.6rem; color: #ccc; overflow: hidden;
-        }
-        .inv-slot.filled { border: 1.5px solid var(--primary); background: white; }
-        .inv-slot img { width: 100%; height: 100%; object-fit: cover; }
-
+        /* --- PAGE 4: HUNTING --- */
         .room-scene {
-            width: 100%; height: 100%; position: relative;
+            width: 100%; height: 100%; position: relative; overflow: hidden;
             background-image: url('photo6.jpg'); background-size: cover; background-position: center;
         }
+        .inventory {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.95); padding: 5px; border-radius: 12px;
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 50; width: 90%;
+        }
+        .inv-slot {
+            width: 45px; height: 45px; background: #eee; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .inv-slot.filled { border: 2px solid var(--primary); background: white; }
+        .inv-slot img { width: 100%; height: 100%; object-fit: cover; }
         .hidden-item {
             position: absolute; width: 40px; height: 50px; cursor: pointer;
-            z-index: 10; background: white; padding: 2px; border-radius: 2px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            background: white; padding: 2px; border-radius: 3px; box-shadow: 0 3px 6px rgba(0,0,0,0.3);
         }
         .hidden-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- FINAL MESSAGE --- */
-        .final-msg-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); z-index: 200;
-            display: none; align-items: center; justify-content: center; opacity: 0; transition: 1.2s;
-        }
-        .final-msg-container.show-final { display: flex; opacity: 1; }
-        .final-msg-box {
-            background: white; padding: 30px; border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(255, 92, 138, 0.2);
-            width: 85%; max-height: 85vh; overflow-y: auto; text-align: center;
-        }
-        .final-msg-box p { font-size: 1rem; line-height: 1.6; color: #444; text-align: left; }
-
+        /* --- MODAL --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 100;
-            display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: center; justify-content: center;
         }
-        .modal-card { background: white; padding: 15px; border-radius: 10px; max-width: 280px; text-align: center; }
-        .modal-card img { width: 100%; border-radius: 5px; }
+        .modal-card { background: white; padding: 15px; border-radius: 15px; max-width: 80%; text-align: center; }
+        .modal-card img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
+
+        /* --- FINAL --- */
+        .final-msg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 200; display: none; flex-direction: column; padding: 30px;
+            overflow-y: auto; text-align: left;
+        }
+        .final-msg-container.show-final { display: flex; }
+        .final-msg-box h1 { color: var(--primary); text-align: center; }
+        .final-msg-box p { line-height: 1.8; color: #444; white-space: pre-wrap; }
     </style>
 </head>
 <body onclick="playAudio()">
@@ -122,198 +126,228 @@
     <div class="bg-floaters" id="bgFloaters"></div>
 
     <div id="page1" class="page active">
-        <h2 style="text-align:center; color:var(--accent);">จดหมายรักฉบับนี้<br>ต้องใช้ความพยายามนะ! 😝</h2>
-        <div class="flying-envelope" id="envelope" onclick="goTo('page2')">
-            <div class="wing left"></div><div class="env-body">💌</div><div class="wing right"></div>
+        <div class="chase-area">
+            <h2 style="text-align:center; margin-top:80px;">จดหมายรักฉบับนี้<br>ต้องใช้ความพยายามนะ! 😝</h2>
+            <div class="flying-envelope" id="envelope" onmouseover="moveEnv()" ontouchstart="moveEnvMobile(event)">
+                <div class="wing left"></div><div class="env-body">💌</div><div class="wing right"></div>
+            </div>
         </div>
-        <div class="music-hint">🎵 แตะเพื่อเริ่มต้น 🎵</div>
+        <div class="music-hint" style="bottom: 10%;">🎵 แตะเพื่อฟังเพลง 🎵</div>
     </div>
 
     <div id="page2" class="page">
-        <div class="timer-group">
+        <div class="timer-container">
             <div class="timer-label">เรารู้จักกันมาแล้ว...</div>
-            <div class="timer-display" id="knowTimer">กำลังคำนวณ...</div>
+            <div class="timer-display" id="know-timer"></div>
             <div class="timer-label">เราคบกันมาแล้ว...</div>
-            <div class="timer-display" id="loveTimer">กำลังคำนวณ...</div>
+            <div class="timer-display" id="love-timer"></div>
         </div>
-        <div class="heart-container" onclick="fillHeart()" style="width:180px; position:relative; cursor:pointer;">
-            <svg viewBox="0 0 200 200">
-                <mask id="heartMask"><path d="M100,180 C20,130 0,80 0,50 C0,20 25,0 55,0 C75,0 90,15 100,30 C110,15 125,0 145,0 C175,0 200,20 200,50 C200,80 180,130 100,180 Z" fill="white"/></mask>
-                <rect x="0" y="200" width="200" height="200" fill="#ff5c8a" mask="url(#heartMask)" id="waterLevel"></rect>
-            </svg>
-            <div style="position:absolute; top:45%; width:100%; text-align:center; color:#fff; font-weight:bold;"><span id="percent">0%</span></div>
-        </div>
-        <p style="margin-top:15px; font-size:0.9rem; color:#999;">👆 เติมความรักให้เต็ม!</p>
+        <button onclick="goTo('page3')" style="padding:10px 30px; border-radius:20px; border:none; background:var(--primary); color:white; font-family:'Kanit';">ไปดูความลับกัน ❤️</button>
     </div>
 
     <div id="page3" class="page">
-        <h2>ความทรงจำที่ซ่อนอยู่...</h2>
+        <h2 style="margin-bottom:20px;">มีความลับซ่อนอยู่...</h2>
         <div class="scratch-box">
             <img src="photo1.jpg" style="width:100%; height:100%; object-fit:cover;">
-            <canvas id="scratchCanvas" width="280" height="280" style="position:absolute; top:0; left:0; cursor:pointer;"></canvas>
+            <canvas id="scratchCanvas" width="300" height="300" style="position:absolute; top:0; left:0; cursor:pointer;"></canvas>
         </div>
-        <p style="margin-top:10px; color:#888;">ขูดเพื่อดูภาพความทรงจำ</p>
+        <p id="scratch-hint" style="margin-top:15px; color:#888;">ขูดให้ถึง 70% นะคะ</p>
     </div>
 
     <div id="page4" class="page" style="padding:0;">
         <div class="inventory" id="inventory">
             </div>
-        <div class="room-scene">
-            <div class="hidden-item" style="top:25%; left:15%;" onclick="foundPhoto(1, this)"><img src="photo1.jpg"></div>
-            <div class="hidden-item" style="top:18%; right:20%;" onclick="foundPhoto(2, this)"><img src="photo2.jpg"></div>
-            <div class="hidden-item" style="bottom:30%; left:10%;" onclick="foundPhoto(3, this)"><img src="photo3.jpg"></div>
-            <div class="hidden-item" style="bottom:15%; right:15%;" onclick="foundPhoto(4, this)"><img src="photo4.jpg"></div>
-            <div class="hidden-item" style="top:45%; left:40%;" onclick="foundPhoto(5, this)"><img src="photo5.jpg"></div>
-            <div class="hidden-item" style="bottom:40%; right:45%;" onclick="foundPhoto(6, this)"><img src="photo6.jpg"></div>
-            <div class="hidden-item" style="top:60%; right:10%;" onclick="foundPhoto(7, this)"><img src="photo7.jpg"></div>
-            <div class="hidden-item" style="bottom:10%; left:35%;" onclick="foundPhoto(8, this)"><img src="photo8.jpg"></div>
-            <div class="hidden-item" style="top:10%; left:50%;" onclick="foundPhoto(9, this)"><img src="photo9.jpg"></div>
-            <div class="hidden-item" style="top:75%; left:20%;" onclick="foundPhoto(10, this)"><img src="photo10.jpg"></div>
-            <div class="hidden-item" style="bottom:45%; left:5%;" onclick="foundPhoto(11, this)"><img src="photo11.jpg"></div>
-        </div>
+        <div class="room-scene" id="roomScene">
+            </div>
     </div>
 
     <div class="modal-overlay" id="previewModal">
         <div class="modal-card">
             <img src="" id="previewImg">
-            <p id="previewCaption" style="margin:10px 0; font-style:italic; color:#555;"></p>
-            <button onclick="confirmKeep()" style="background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:20px;">Keep it! ❤️</button>
+            <p id="previewCaption" style="font-weight:600; color:#555;"></p>
+            <button onclick="confirmKeep()" style="background:var(--primary); color:white; border:none; padding:10px 25px; border-radius:30px; font-family:'Kanit';">เก็บไว้ในใจ ❤️</button>
         </div>
     </div>
 
     <div class="final-msg-container" id="finalMsgContainer">
         <div class="final-msg-box">
-            <h1 style="color:var(--primary);">My Love,</h1>
-            <p>
-                Happy Valentine’s Day 💖<br><br>
-                I just want you to know how incredibly grateful I am to have you in my life. You are not just my partner, but my safe place, my smile on hard days, and my happiness on ordinary days.<br><br>
-                Every moment with you makes my world brighter. Your smile warms my heart, your voice makes me feel calm, and your love makes me feel complete. I love the way you care, the way you laugh, and the way you make me feel special without even trying.<br><br>
-                Thank you for loving me the way you do, for always being by my side, and for choosing me every single day. I promise to keep loving you more and more, today, tomorrow, and always.<br><br>
-                You are my Valentine, my favorite person, and my forever. I love you so much 🤍
-            </p>
+            <h1>Happy Valentine’s Day 💖</h1>
+            <p id="finalText"></p>
         </div>
     </div>
 
     <script>
-        // CONFIG
-        const knowDate = new Date(2025, 3, 7); // 7 April 2025
-        const loveDate = new Date(2025, 4, 1); // 1 May 2025
+        // --- DATA ---
+        const dateKnow = new Date(2025, 3, 7); // 7 เมษา 2568 (Month is 0-indexed)
+        const dateLove = new Date(2025, 4, 1); // 1 พค 2568
         
-        const photos = [
-            { src: "photo1.jpg", caption: "I love you more than words can say." },
-            { src: "photo2.jpg", caption: "You are my favorite person in the whole world." },
-            { src: "photo3.jpg", caption: "Every day with you is my happiest day." },
-            { src: "photo4.jpg", caption: "I fall in love with you a little more every day." },
-            { src: "photo5.jpg", caption: "You make my heart smile." },
-            { src: "photo6.jpg", caption: "Life is sweeter because of you." },
-            { src: "photo7.jpg", caption: "You are my sunshine on cloudy days." },
-            { src: "photo8.jpg", caption: "I’m so lucky to have you in my life." },
-            { src: "photo9.jpg", caption: "My heart is yours, always." },
-            { src: "photo10.jpg", caption: "You are my smile, my love, my everything." },
-            { src: "photo11.jpg", caption: "You complete me." }
+        const photoData = [
+            { id: 1, text: "1. I love you more than words can say." },
+            { id: 2, text: "2. You are my favorite person in the whole world." },
+            { id: 3, text: "3. Every day with you is my happiest day." },
+            { id: 4, text: "4. I fall in love with you a little more every day." },
+            { id: 5, text: "5. You make my heart smile." },
+            { id: 7, text: "7. Life is sweeter because of you." },
+            { id: 8, text: "8. You are my sunshine on cloudy days." },
+            { id: 9, text: "9. I’m so lucky to have you in my life." },
+            { id: 10, text: "10. My heart is yours, always." },
+            { id: 11, text: "11. You are my smile, my love, my everything." },
+            { id: 12, text: "12. Our love is forever." }
         ];
 
-        // Init Inventory Slots
-        const inv = document.getElementById('inventory');
-        for(let i=1; i<=11; i++) {
-            inv.innerHTML += `<div class="inv-slot" id="slot${i}">${i}</div>`;
-        }
+        const finalMsg = `Day, My Love"}My love,
+Happy Valentine’s Day 💖I just want you to know how incredibly grateful I am to have you in my life. You are not just my partner, but my safe place, my smile on hard days, and my happiness on ordinary days.
+Every moment with you makes my world brighter. Your smile warms my heart, your voice makes me feel calm, and your love makes me feel complete. I love the way you care, the way you laugh, and the way you make me feel special without even trying.
+Thank you for loving me the way you do, for always being by my side, and for choosing me every single day. I promise to keep loving you more and more, today, tomorrow, and always.
+You are my Valentine, my favorite person, and my forever.I love you so much 🤍
+With a`;
 
+        // --- AUDIO ---
+        let audioPlaying = false;
         function playAudio() {
-            const bgm = document.getElementById('bgm');
-            if(bgm.paused) bgm.play().catch(()=>{});
+            if(!audioPlaying) {
+                document.getElementById('bgm').play().catch(()=>{});
+                audioPlaying = true;
+                if(document.querySelector('.music-hint')) document.querySelector('.music-hint').style.display = 'none';
+            }
         }
 
+        // --- NAVIGATION ---
         function goTo(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(id === 'page2') startTimers();
-            if(id === 'page3') startScratch();
+            if(id === 'page3') initScratch();
+            if(id === 'page4') initHunting();
         }
 
+        // --- TIMERS ---
         function startTimers() {
             setInterval(() => {
                 const now = new Date();
-                
-                const diffKnow = now - knowDate;
-                const dK = Math.floor(diffKnow / (1000*60*60*24));
-                const hK = Math.floor((diffKnow / (1000*60*60)) % 24);
-                const mK = Math.floor((diffKnow / (1000*60)) % 60);
-                const sK = Math.floor((diffKnow / 1000) % 60);
-                document.getElementById('knowTimer').innerText = `${dK} วัน ${hK} ชม. ${mK} น. ${sK} ว.`;
-
-                const diffLove = now - loveDate;
-                const dL = Math.floor(diffLove / (1000*60*60*24));
-                const hL = Math.floor((diffLove / (1000*60*60)) % 24);
-                const mL = Math.floor((diffLove / (1000*60)) % 60);
-                const sL = Math.floor((diffLove / 1000) % 60);
-                document.getElementById('loveTimer').innerText = `${dL} วัน ${hL} ชม. ${mL} น. ${sL} ว.`;
+                document.getElementById('know-timer').innerText = updateTimer(now, dateKnow);
+                document.getElementById('love-timer').innerText = updateTimer(now, dateLove);
             }, 1000);
         }
-
-        let lovePercent = 0;
-        function fillHeart() {
-            lovePercent += 10; if(lovePercent > 100) lovePercent = 100;
-            document.getElementById('waterLevel').setAttribute('y', 200 - (200 * (lovePercent/100)));
-            document.getElementById('percent').innerText = lovePercent + "%";
-            if(lovePercent >= 100) setTimeout(() => goTo('page3'), 600);
+        function updateTimer(now, start) {
+            const diff = now - start;
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            return `${d} วัน ${h} ชม. ${m} นาที ${s} วิ`;
         }
 
-        function startScratch() {
+        // --- CHASE ENVELOPE ---
+        const env = document.getElementById('envelope');
+        function moveEnv() {
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150);
+            env.style.left = x + 'px'; env.style.top = y + 'px';
+        }
+        let envTouches = 0;
+        function moveEnvMobile(e) {
+            envTouches++;
+            if(envTouches < 5) { e.preventDefault(); moveEnv(); }
+            else goTo('page2');
+        }
+        env.onclick = () => goTo('page2');
+
+        // --- SCRATCH CARD ---
+        function initScratch() {
             const c = document.getElementById('scratchCanvas');
             const ctx = c.getContext('2d');
             ctx.fillStyle = '#C0C0C0';
-            ctx.fillRect(0,0,280,280);
-
-            let isDrawing = false;
+            ctx.fillRect(0,0,300,300);
+            
+            let drawing = false;
             function scratch(x, y) {
                 ctx.globalCompositeOperation = 'destination-out';
                 ctx.beginPath(); ctx.arc(x, y, 25, 0, Math.PI*2); ctx.fill();
-                
-                const d = ctx.getImageData(0,0,280,280).data;
-                let hits = 0;
-                for(let i=3; i<d.length; i+=4) if(d[i] === 0) hits++;
-                // ขูดไป 60% แล้วเปลี่ยนหน้า แต่รูป Canvas จะไม่ถูกสั่ง display:none
-                if(hits / (280*280) > 0.6) {
-                    setTimeout(() => goTo('page4'), 1500);
+                checkScratch();
+            }
+            function checkScratch() {
+                const data = ctx.getImageData(0,0,300,300).data;
+                let cleared = 0;
+                for(let i=3; i<data.length; i+=4) if(data[i] === 0) cleared++;
+                if(cleared / (300*300) > 0.7) {
+                    document.getElementById('scratch-hint').innerText = "เก่งมาก! ไปต่อกันเลย";
+                    setTimeout(() => goTo('page4'), 1000);
                 }
             }
-
-            c.onmousedown = () => isDrawing = true;
-            window.onmouseup = () => isDrawing = false;
-            c.onmousemove = (e) => {
-                if(!isDrawing) return;
+            c.addEventListener('mousedown', () => drawing = true);
+            window.addEventListener('mouseup', () => drawing = false);
+            c.addEventListener('mousemove', (e) => {
+                if(!drawing) return;
                 const r = c.getBoundingClientRect();
                 scratch(e.clientX - r.left, e.clientY - r.top);
-            };
-            c.ontouchmove = (e) => {
+            });
+            c.addEventListener('touchstart', (e) => { drawing = true; e.preventDefault(); });
+            c.addEventListener('touchmove', (e) => {
                 const r = c.getBoundingClientRect();
                 scratch(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top);
-                e.preventDefault();
-            };
+            });
         }
 
-        let currentIdx = 0; let currentEl = null; let collected = 0;
-        function foundPhoto(idx, el) {
-            currentIdx = idx; currentEl = el;
-            document.getElementById('previewImg').src = photos[idx-1].src;
-            document.getElementById('previewCaption').innerText = photos[idx-1].caption;
-            document.getElementById('previewModal').style.display = 'flex';
+        // --- HUNTING GAME ---
+        let collected = 0;
+        let activeItem = null;
+
+        function initHunting() {
+            const scene = document.getElementById('roomScene');
+            const inv = document.getElementById('inventory');
+            scene.innerHTML = ''; inv.innerHTML = '';
+            
+            photoData.forEach(p => {
+                // Create Slot
+                const slot = document.createElement('div');
+                slot.className = 'inv-slot';
+                slot.id = `slot-${p.id}`;
+                inv.appendChild(slot);
+
+                // Create Item
+                const item = document.createElement('div');
+                item.className = 'hidden-item';
+                item.style.top = Math.random() * 70 + 15 + '%';
+                item.style.left = Math.random() * 80 + 5 + '%';
+                item.innerHTML = `<img src="photo${p.id}.jpg">`;
+                item.onclick = () => {
+                    activeItem = { ...p, el: item };
+                    document.getElementById('previewImg').src = `photo${p.id}.jpg`;
+                    document.getElementById('previewCaption').innerText = p.text;
+                    document.getElementById('previewModal').style.display = 'flex';
+                };
+                scene.appendChild(item);
+            });
         }
 
         function confirmKeep() {
             document.getElementById('previewModal').style.display = 'none';
-            currentEl.style.opacity = '0'; currentEl.style.pointerEvents = 'none';
-            const slot = document.getElementById('slot' + currentIdx);
+            activeItem.el.style.display = 'none';
+            const slot = document.getElementById(`slot-${activeItem.id}`);
             slot.classList.add('filled');
-            slot.innerHTML = `<img src="${photos[currentIdx-1].src}">`;
+            slot.innerHTML = `<img src="photo${activeItem.id}.jpg">`;
             collected++;
-            if(collected === 11) {
+            if(collected === photoData.length) {
                 setTimeout(() => {
+                    document.getElementById('finalText').innerText = finalMsg;
                     document.getElementById('finalMsgContainer').classList.add('show-final');
                 }, 1000);
             }
         }
+
+        // Background floaters
+        const ems = ['❤️','🌸','✨','💖'];
+        setInterval(() => {
+            const e = document.createElement('div');
+            e.className = 'floater';
+            e.innerText = ems[Math.floor(Math.random()*ems.length)];
+            e.style.left = Math.random()*100+'%';
+            e.style.fontSize = Math.random()*20+10+'px';
+            e.style.animationDuration = Math.random()*5+5+'s';
+            document.getElementById('bgFloaters').appendChild(e);
+            setTimeout(() => e.remove(), 10000);
+        }, 600);
     </script>
 </body>
 </html>
