@@ -47,52 +47,59 @@
         }
         .active { display: flex; }
 
-        /* PAGE 1: ENVELOPE */
+        /* --- PAGE 1: WINGED ENVELOPE --- */
         .chase-area { position: relative; width: 100%; height: 100%; }
         .flying-envelope {
-            position: absolute; width: 140px; height: 90px;
-            cursor: pointer; z-index: 20; transition: transform 0.2s ease-out;
+            position: absolute; width: 120px; height: 80px;
+            cursor: pointer; z-index: 20; transition: all 0.3s ease-out;
         }
-        .env-body { font-size: 6rem; text-align: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.15)); }
+        .env-body { font-size: 5rem; position: relative; z-index: 2; text-align: center; }
+        .wing {
+            position: absolute; top: 10px; width: 60px; height: 40px;
+            background: white; border: 1px solid #ddd; border-radius: 50% 50% 0 50%;
+            z-index: 1; opacity: 0.8;
+        }
+        .wing-l { left: -30px; animation: flapL 0.2s infinite alternate; transform-origin: right center; }
+        .wing-r { right: -30px; border-radius: 50% 50% 50% 0; animation: flapR 0.2s infinite alternate; transform-origin: left center; }
         
-        /* PAGE 2: TIMER */
+        @keyframes flapL { from { transform: rotate(10deg); } to { transform: rotate(-30deg); } }
+        @keyframes flapR { from { transform: rotate(-10deg); } to { transform: rotate(30deg); } }
+
+        /* --- PAGE 2: TIMER & HEART --- */
         .timer-card {
             background: white; padding: 20px; border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;
             width: 90%; max-width: 350px; margin-bottom: 20px;
         }
-        .timer-label { font-size: 0.9rem; color: #888; margin-bottom: 5px; }
         .timer-display { font-size: 1rem; color: var(--primary); font-weight: 600; margin-bottom: 15px; }
         .heart-container { width: 180px; height: 160px; position: relative; cursor: pointer; }
 
-        /* PAGE 3: SCRATCH */
+        /* --- PAGE 3: SCRATCH --- */
         .scratch-box {
             position: relative; width: 280px; height: 280px;
             border: 8px solid white; border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15); overflow: hidden;
         }
 
-        /* PAGE 4: GAME */
+        /* --- PAGE 4: GAME --- */
         .room-scene {
             width: 100%; height: 100%; position: relative;
             background-image: url('photo6.jpg'); background-size: cover; background-position: center;
         }
         .hidden-item {
-            position: absolute; width: 40px; height: 50px; cursor: pointer;
-            z-index: 10; background: white; padding: 2px; border-radius: 3px;
+            position: absolute; width: 45px; height: 55px; cursor: pointer;
+            z-index: 10; background: white; padding: 3px; border-radius: 3px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.2); transition: 0.2s;
         }
         .hidden-item img { width: 100%; height: 100%; object-fit: cover; }
         .inventory {
             position: absolute; top: 10px; left: 10px; right: 10px;
             background: rgba(255,255,255,0.9); padding: 8px; border-radius: 15px;
-            display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 50;
         }
         .inv-slot {
-            aspect-ratio: 1/1; background: #eee; border-radius: 5px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.6rem; color: #ccc; overflow: hidden;
+            aspect-ratio: 1/1; background: #eee; border-radius: 5px; overflow: hidden;
         }
         .inv-slot.filled { border: 1.5px solid var(--primary); background: white; }
         .inv-slot.filled img { width: 100%; height: 100%; object-fit: cover; }
@@ -100,29 +107,24 @@
         /* MODAL */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 100;
-            display: none; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.85); z-index: 100; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
         }
         .modal-card {
             background: white; padding: 15px; border-radius: 10px;
             width: 85%; max-width: 300px; text-align: center;
         }
         .modal-card img { width: 100%; border-radius: 5px; margin-bottom: 15px; }
-        .btn-keep {
-            background: var(--primary); color: white; border: none;
-            padding: 10px 20px; border-radius: 25px; font-family: 'Kanit'; cursor: pointer;
-        }
 
-        /* FINAL MESSAGE */
+        /* FINAL PAGE */
         .final-msg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; z-index: 200; display: none;
-            overflow-y: auto; padding: 40px 20px; box-sizing: border-box;
+            overflow-y: auto; padding: 50px 25px; box-sizing: border-box;
         }
         .final-msg-box { text-align: center; max-width: 500px; margin: 0 auto; }
-        .final-msg-box h1 { color: var(--primary); font-family: 'Dancing Script', cursive; font-size: 2.5rem; }
-        .final-msg-box p { font-size: 1rem; line-height: 1.8; color: #444; margin-bottom: 10px; }
+        .final-msg-box h1 { color: var(--primary); font-family: 'Dancing Script', cursive; font-size: 2.4rem; }
+        .final-msg-box p { font-size: 1.05rem; line-height: 1.8; color: #444; margin: 10px 0; }
     </style>
 </head>
 <body onclick="playAudio()">
@@ -132,19 +134,21 @@
 
     <div id="page1" class="page active">
         <div class="chase-area">
-            <h2 style="text-align:center; margin-top:80px;">จดหมายฉบับนี้<br>ต้องใช้ความพยายามนะ! 😝</h2>
+            <h2 style="text-align:center; margin-top:80px;">จดหมายรักฉบับนี้<br>ต้องใช้ความพยายามนะ! 😝</h2>
             <div class="flying-envelope" id="envelope" onmouseover="moveEnv()" ontouchstart="moveEnvMobile(event)">
+                <div class="wing wing-l"></div>
                 <div class="env-body">💌</div>
+                <div class="wing wing-r"></div>
             </div>
         </div>
-        <div style="margin-bottom: 40px; color: var(--primary);">🎵 แตะเพื่อเริ่มเล่นเพลง</div>
+        <p style="margin-bottom: 40px; color: var(--primary);">🎵 แตะเพื่อเริ่มเพลง</p>
     </div>
 
     <div id="page2" class="page">
         <div class="timer-card">
-            <div class="timer-label">เรารู้จักกันมาแล้ว...</div>
+            <div style="font-size: 0.9rem; color: #888;">เรารู้จักกันมาแล้ว...</div>
             <div class="timer-display" id="knowTimer"></div>
-            <div class="timer-label">และเราคบกันมา...</div>
+            <div style="font-size: 0.9rem; color: #888;">และเราคบกันมา...</div>
             <div class="timer-display" id="loveTimer"></div>
         </div>
         <div class="heart-container" onclick="fillHeart()">
@@ -164,7 +168,6 @@
             <img src="photo1.jpg" style="width:100%; height:100%; object-fit:cover;">
             <canvas id="scratchCanvas" width="280" height="280" style="position:absolute; top:0; left:0;"></canvas>
         </div>
-        <p style="color:#888; margin-top:20px;">ขูดให้ถึง 70% นะครับ</p>
     </div>
 
     <div id="page4" class="page" style="padding:0;">
@@ -176,15 +179,14 @@
             <div class="inv-slot" id="slot10"></div><div class="inv-slot" id="slot11"></div>
             <div class="inv-slot" id="slot12"></div>
         </div>
-        <div class="room-scene" id="gameScene">
-            </div>
+        <div class="room-scene" id="gameScene"></div>
     </div>
 
     <div class="modal-overlay" id="previewModal">
         <div class="modal-card">
             <img src="" id="previewImg">
             <p id="previewCaption" style="font-weight:600; color:#555;"></p>
-            <button class="btn-keep" onclick="confirmKeep()">เก็บใส่ความทรงจำ ❤️</button>
+            <button style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:25px; cursor:pointer;" onclick="confirmKeep()">เก็บใส่กระเป๋า ❤️</button>
         </div>
     </div>
 
@@ -199,13 +201,13 @@
             <p>Thank you for loving me the way you do, for always being by my side, and for choosing me every single day.</p>
             <p>I promise to keep loving you more and more, today, tomorrow, and always.</p>
             <p>You are my Valentine, my favorite person, and my forever.</p>
-            <p style="font-size: 1.5rem;">I love you so much 🤍</p>
+            <p style="font-size: 1.4rem; font-weight: bold;">I love you so much 🤍</p>
+            <p>With a</p>
         </div>
     </div>
 
     <script>
-        // --- CONFIG ---
-        const dateKnown = new Date(2025, 3, 7); // 7 เมษา (Month is 0-indexed)
+        const dateKnown = new Date(2025, 3, 7); // 7 เมษา
         const dateLove = new Date(2025, 4, 1);  // 1 พค
         
         const photoData = [
@@ -225,7 +227,7 @@
         let audioPlaying = false;
         function playAudio() {
             if(!audioPlaying) {
-                document.getElementById('bgm').play();
+                document.getElementById('bgm').play().catch(()=>{});
                 audioPlaying = true;
             }
         }
@@ -254,12 +256,15 @@
             if(id === 'page4') initGame();
         }
 
-        // PAGE 1 LOGIC
+        // PAGE 1: มีปีกขยับได้
         const env = document.getElementById('envelope');
         let moveCount = 0;
+        env.style.left = '50%'; env.style.top = '45%'; env.style.transform = 'translate(-50%, -50%)';
+
         function moveEnv() {
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
+            const x = Math.random() * (window.innerWidth - 120);
+            const y = Math.random() * (window.innerHeight - 120);
+            env.style.transform = 'none';
             env.style.left = x+'px'; env.style.top = y+'px';
         }
         function moveEnvMobile(e) {
@@ -269,7 +274,7 @@
         }
         env.onclick = () => goTo('page2');
 
-        // PAGE 2 LOGIC
+        // PAGE 2: TIMERS
         function startTimers() {
             setInterval(() => {
                 const now = new Date();
@@ -293,17 +298,12 @@
             if(lovePercent >= 100) setTimeout(() => goTo('page3'), 600);
         }
 
-        // PAGE 3 LOGIC
+        // PAGE 3: SCRATCH
         function initScratch() {
             const canvas = document.getElementById('scratchCanvas');
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#C0C0C0';
             ctx.fillRect(0,0,280,280);
-            ctx.font = "20px Kanit";
-            ctx.fillStyle = "#888";
-            ctx.textAlign = "center";
-            ctx.fillText("ขูดเลยย", 140, 140);
-
             let isDrawing = false;
             const scratch = (x, y) => {
                 ctx.globalCompositeOperation = 'destination-out';
@@ -333,11 +333,12 @@
             };
         }
 
-        // PAGE 4 LOGIC
+        // PAGE 4: GAME (11 ITEMS)
         let collected = 0;
         let activeItem = null;
         function initGame() {
             const scene = document.getElementById('gameScene');
+            scene.innerHTML = ""; // Clear
             photoData.forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'hidden-item';
