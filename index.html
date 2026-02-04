@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Valentine's Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff5c8a;
+            --secondary: #ffacc5;
+            --accent: #5e3040;
+            --bg: #fff5f7;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg);
+            color: var(--accent);
+            margin: 0; padding: 0;
+            overflow: hidden;
+            height: 100vh; width: 100vw;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            word-break: keep-all;
+        }
+
+        /* --- BACKGROUND FLOATERS --- */
+        .bg-floaters {
+            position: fixed; width: 100%; height: 100%; top: 0; left: 0;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .floater {
+            position: absolute; bottom: -50px;
+            animation: floatUp linear infinite; opacity: 0.6;
+        }
+        @keyframes floatUp { 
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .page {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s; z-index: 10;
+            padding: 20px; box-sizing: border-box;
+        }
+        .active { display: flex; }
+
+        /* --- PAGE 2: TIMER --- */
+        .timer-group {
+            background: white; padding: 20px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px;
+            width: 90%; max-width: 350px;
+        }
+        .timer-label { font-size: 0.9rem; color: #888; margin-bottom: 5px; }
+        .timer-display {
+            font-size: 1rem; color: var(--primary); font-weight: 600;
+            margin-bottom: 15px; text-align: center;
+        }
+
+        /* --- SCRATCH --- */
+        .scratch-box {
+            position: relative; width: 280px; height: 280px;
+            border: 8px solid white; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); overflow: hidden;
+        }
+
+        /* --- GALLERY (11 ITEMS) --- */
+        .inventory {
+            position: absolute; top: 10px; left: 10px; right: 10px;
+            background: rgba(255,255,255,0.9); padding: 8px; border-radius: 15px;
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 50;
+        }
+        .inv-slot {
+            aspect-ratio: 1/1; background: #eee; border-radius: 5px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; color: #ccc; overflow: hidden;
+        }
+        .inv-slot.filled { border: 1.5px solid var(--primary); background: white; }
+        .inv-slot img { width: 100%; height: 100%; object-fit: cover; }
+
+        .room-scene {
+            width: 100%; height: 100%; position: relative;
+            background-image: url('photo6.jpg'); background-size: cover; background-position: center;
+        }
+        .hidden-item {
+            position: absolute; width: 40px; height: 50px; cursor: pointer;
+            z-index: 10; background: white; padding: 2px; border-radius: 2px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        .hidden-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- FINAL MESSAGE --- */
+        .final-msg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95); z-index: 200;
+            display: none; align-items: center; justify-content: center; opacity: 0; transition: 1.2s;
+        }
+        .final-msg-container.show-final { display: flex; opacity: 1; }
+        .final-msg-box {
+            background: white; padding: 30px; border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(255, 92, 138, 0.2);
+            width: 85%; max-height: 85vh; overflow-y: auto; text-align: center;
+        }
+        .final-msg-box p { font-size: 1rem; line-height: 1.6; color: #444; text-align: left; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 100;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .modal-card { background: white; padding: 15px; border-radius: 10px; max-width: 280px; text-align: center; }
+        .modal-card img { width: 100%; border-radius: 5px; }
+    </style>
+</head>
+<body onclick="playAudio()">
+
+    <audio id="bgm" loop><source src="song.mp3" type="audio/mpeg"></audio>
+    <div class="bg-floaters" id="bgFloaters"></div>
+
+    <div id="page1" class="page active">
+        <h2 style="text-align:center; color:var(--accent);">จดหมายรักฉบับนี้<br>ต้องใช้ความพยายามนะ! 😝</h2>
+        <div class="flying-envelope" id="envelope" onclick="goTo('page2')">
+            <div class="wing left"></div><div class="env-body">💌</div><div class="wing right"></div>
+        </div>
+        <div class="music-hint">🎵 แตะเพื่อเริ่มต้น 🎵</div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="timer-group">
+            <div class="timer-label">เรารู้จักกันมาแล้ว...</div>
+            <div class="timer-display" id="knowTimer">กำลังคำนวณ...</div>
+            <div class="timer-label">เราคบกันมาแล้ว...</div>
+            <div class="timer-display" id="loveTimer">กำลังคำนวณ...</div>
+        </div>
+        <div class="heart-container" onclick="fillHeart()" style="width:180px; position:relative; cursor:pointer;">
+            <svg viewBox="0 0 200 200">
+                <mask id="heartMask"><path d="M100,180 C20,130 0,80 0,50 C0,20 25,0 55,0 C75,0 90,15 100,30 C110,15 125,0 145,0 C175,0 200,20 200,50 C200,80 180,130 100,180 Z" fill="white"/></mask>
+                <rect x="0" y="200" width="200" height="200" fill="#ff5c8a" mask="url(#heartMask)" id="waterLevel"></rect>
+            </svg>
+            <div style="position:absolute; top:45%; width:100%; text-align:center; color:#fff; font-weight:bold;"><span id="percent">0%</span></div>
+        </div>
+        <p style="margin-top:15px; font-size:0.9rem; color:#999;">👆 เติมความรักให้เต็ม!</p>
+    </div>
+
+    <div id="page3" class="page">
+        <h2>ความทรงจำที่ซ่อนอยู่...</h2>
+        <div class="scratch-box">
+            <img src="photo1.jpg" style="width:100%; height:100%; object-fit:cover;">
+            <canvas id="scratchCanvas" width="280" height="280" style="position:absolute; top:0; left:0; cursor:pointer;"></canvas>
+        </div>
+        <p style="margin-top:10px; color:#888;">ขูดเพื่อดูภาพความทรงจำ</p>
+    </div>
+
+    <div id="page4" class="page" style="padding:0;">
+        <div class="inventory" id="inventory">
+            </div>
+        <div class="room-scene">
+            <div class="hidden-item" style="top:25%; left:15%;" onclick="foundPhoto(1, this)"><img src="photo1.jpg"></div>
+            <div class="hidden-item" style="top:18%; right:20%;" onclick="foundPhoto(2, this)"><img src="photo2.jpg"></div>
+            <div class="hidden-item" style="bottom:30%; left:10%;" onclick="foundPhoto(3, this)"><img src="photo3.jpg"></div>
+            <div class="hidden-item" style="bottom:15%; right:15%;" onclick="foundPhoto(4, this)"><img src="photo4.jpg"></div>
+            <div class="hidden-item" style="top:45%; left:40%;" onclick="foundPhoto(5, this)"><img src="photo5.jpg"></div>
+            <div class="hidden-item" style="bottom:40%; right:45%;" onclick="foundPhoto(6, this)"><img src="photo6.jpg"></div>
+            <div class="hidden-item" style="top:60%; right:10%;" onclick="foundPhoto(7, this)"><img src="photo7.jpg"></div>
+            <div class="hidden-item" style="bottom:10%; left:35%;" onclick="foundPhoto(8, this)"><img src="photo8.jpg"></div>
+            <div class="hidden-item" style="top:10%; left:50%;" onclick="foundPhoto(9, this)"><img src="photo9.jpg"></div>
+            <div class="hidden-item" style="top:75%; left:20%;" onclick="foundPhoto(10, this)"><img src="photo10.jpg"></div>
+            <div class="hidden-item" style="bottom:45%; left:5%;" onclick="foundPhoto(11, this)"><img src="photo11.jpg"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-card">
+            <img src="" id="previewImg">
+            <p id="previewCaption" style="margin:10px 0; font-style:italic; color:#555;"></p>
+            <button onclick="confirmKeep()" style="background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:20px;">Keep it! ❤️</button>
+        </div>
+    </div>
+
+    <div class="final-msg-container" id="finalMsgContainer">
+        <div class="final-msg-box">
+            <h1 style="color:var(--primary);">My Love,</h1>
+            <p>
+                Happy Valentine’s Day 💖<br><br>
+                I just want you to know how incredibly grateful I am to have you in my life. You are not just my partner, but my safe place, my smile on hard days, and my happiness on ordinary days.<br><br>
+                Every moment with you makes my world brighter. Your smile warms my heart, your voice makes me feel calm, and your love makes me feel complete. I love the way you care, the way you laugh, and the way you make me feel special without even trying.<br><br>
+                Thank you for loving me the way you do, for always being by my side, and for choosing me every single day. I promise to keep loving you more and more, today, tomorrow, and always.<br><br>
+                You are my Valentine, my favorite person, and my forever. I love you so much 🤍
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG
+        const knowDate = new Date(2025, 3, 7); // 7 April 2025
+        const loveDate = new Date(2025, 4, 1); // 1 May 2025
+        
+        const photos = [
+            { src: "photo1.jpg", caption: "I love you more than words can say." },
+            { src: "photo2.jpg", caption: "You are my favorite person in the whole world." },
+            { src: "photo3.jpg", caption: "Every day with you is my happiest day." },
+            { src: "photo4.jpg", caption: "I fall in love with you a little more every day." },
+            { src: "photo5.jpg", caption: "You make my heart smile." },
+            { src: "photo6.jpg", caption: "Life is sweeter because of you." },
+            { src: "photo7.jpg", caption: "You are my sunshine on cloudy days." },
+            { src: "photo8.jpg", caption: "I’m so lucky to have you in my life." },
+            { src: "photo9.jpg", caption: "My heart is yours, always." },
+            { src: "photo10.jpg", caption: "You are my smile, my love, my everything." },
+            { src: "photo11.jpg", caption: "You complete me." }
+        ];
+
+        // Init Inventory Slots
+        const inv = document.getElementById('inventory');
+        for(let i=1; i<=11; i++) {
+            inv.innerHTML += `<div class="inv-slot" id="slot${i}">${i}</div>`;
+        }
+
+        function playAudio() {
+            const bgm = document.getElementById('bgm');
+            if(bgm.paused) bgm.play().catch(()=>{});
+        }
+
+        function goTo(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'page2') startTimers();
+            if(id === 'page3') startScratch();
+        }
+
+        function startTimers() {
+            setInterval(() => {
+                const now = new Date();
+                
+                const diffKnow = now - knowDate;
+                const dK = Math.floor(diffKnow / (1000*60*60*24));
+                const hK = Math.floor((diffKnow / (1000*60*60)) % 24);
+                const mK = Math.floor((diffKnow / (1000*60)) % 60);
+                const sK = Math.floor((diffKnow / 1000) % 60);
+                document.getElementById('knowTimer').innerText = `${dK} วัน ${hK} ชม. ${mK} น. ${sK} ว.`;
+
+                const diffLove = now - loveDate;
+                const dL = Math.floor(diffLove / (1000*60*60*24));
+                const hL = Math.floor((diffLove / (1000*60*60)) % 24);
+                const mL = Math.floor((diffLove / (1000*60)) % 60);
+                const sL = Math.floor((diffLove / 1000) % 60);
+                document.getElementById('loveTimer').innerText = `${dL} วัน ${hL} ชม. ${mL} น. ${sL} ว.`;
+            }, 1000);
+        }
+
+        let lovePercent = 0;
+        function fillHeart() {
+            lovePercent += 10; if(lovePercent > 100) lovePercent = 100;
+            document.getElementById('waterLevel').setAttribute('y', 200 - (200 * (lovePercent/100)));
+            document.getElementById('percent').innerText = lovePercent + "%";
+            if(lovePercent >= 100) setTimeout(() => goTo('page3'), 600);
+        }
+
+        function startScratch() {
+            const c = document.getElementById('scratchCanvas');
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#C0C0C0';
+            ctx.fillRect(0,0,280,280);
+
+            let isDrawing = false;
+            function scratch(x, y) {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath(); ctx.arc(x, y, 25, 0, Math.PI*2); ctx.fill();
+                
+                const d = ctx.getImageData(0,0,280,280).data;
+                let hits = 0;
+                for(let i=3; i<d.length; i+=4) if(d[i] === 0) hits++;
+                // ขูดไป 60% แล้วเปลี่ยนหน้า แต่รูป Canvas จะไม่ถูกสั่ง display:none
+                if(hits / (280*280) > 0.6) {
+                    setTimeout(() => goTo('page4'), 1500);
+                }
+            }
+
+            c.onmousedown = () => isDrawing = true;
+            window.onmouseup = () => isDrawing = false;
+            c.onmousemove = (e) => {
+                if(!isDrawing) return;
+                const r = c.getBoundingClientRect();
+                scratch(e.clientX - r.left, e.clientY - r.top);
+            };
+            c.ontouchmove = (e) => {
+                const r = c.getBoundingClientRect();
+                scratch(e.touches[0].clientX - r.left, e.touches[0].clientY - r.top);
+                e.preventDefault();
+            };
+        }
+
+        let currentIdx = 0; let currentEl = null; let collected = 0;
+        function foundPhoto(idx, el) {
+            currentIdx = idx; currentEl = el;
+            document.getElementById('previewImg').src = photos[idx-1].src;
+            document.getElementById('previewCaption').innerText = photos[idx-1].caption;
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+
+        function confirmKeep() {
+            document.getElementById('previewModal').style.display = 'none';
+            currentEl.style.opacity = '0'; currentEl.style.pointerEvents = 'none';
+            const slot = document.getElementById('slot' + currentIdx);
+            slot.classList.add('filled');
+            slot.innerHTML = `<img src="${photos[currentIdx-1].src}">`;
+            collected++;
+            if(collected === 11) {
+                setTimeout(() => {
+                    document.getElementById('finalMsgContainer').classList.add('show-final');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
